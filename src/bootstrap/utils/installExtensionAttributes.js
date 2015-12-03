@@ -4,8 +4,10 @@ import edn from 'jsedn';
 // Extension attribute idents
 const typeNameAttributeIdent = edn.kw(':extGraphQL.type/name');
 const typeNamespaceAttributeIdent = edn.kw(':extGraphQL.type/namespace');
+const typeDocAttributeIdent = edn.kw(':extGraphQL.type/doc');
 const interfaceNameAttributeIdent = edn.kw(':extGraphQL.interface/name');
 const interfaceImplementationsAttributeIdent = edn.kw(':extGraphQL.interface/implementations');
+const interfaceDocAttributeIdent = edn.kw(':extGraphQL.interface/doc');
 const refTargetAttributeIdent = edn.kw(':extGraphQL/refTarget');
 const enumValuesAttributeIdent = edn.kw(':extGraphQL/enumValues');
 
@@ -24,6 +26,12 @@ const typeNamespaceAttributePartial = [
   edn.kw(':db/unique'), edn.kw(':db.unique/value'),
   edn.kw(':db/doc'), 'The namespace of a type\'s attribute idents in the db',
 ];
+const typeDocAttributePartial = [
+  edn.kw(':db/ident'), typeDocAttributeIdent,
+  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
+  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
+  edn.kw(':db/doc'), 'The description of a type',
+];
 const interfaceNameAttributePartial = [
   edn.kw(':db/ident'), interfaceNameAttributeIdent,
   edn.kw(':db/valueType'), edn.kw(':db.type/string'),
@@ -36,6 +44,12 @@ const interfaceImplementationsAttributePartial = [
   edn.kw(':db/valueType'), edn.kw(':db.type/ref'),
   edn.kw(':db/cardinality'), edn.kw(':db.cardinality/many'),
   edn.kw(':db/doc'), 'The types that implement an interface',
+];
+const interfaceDocAttributePartial = [
+  edn.kw(':db/ident'), interfaceDocAttributeIdent,
+  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
+  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
+  edn.kw(':db/doc'), 'The description of an interface',
 ];
 const refTargetAttributePartial = [
   edn.kw(':db/ident'), refTargetAttributeIdent,
@@ -55,8 +69,10 @@ export default (apiUrl, dbAlias) => {
   const installExtensionAttributesTransactionEdn = new edn.Vector([
     installAttributePartial(typeNameAttributePartial),
     installAttributePartial(typeNamespaceAttributePartial),
+    installAttributePartial(typeDocAttributePartial),
     installAttributePartial(interfaceNameAttributePartial),
     installAttributePartial(interfaceImplementationsAttributePartial),
+    installAttributePartial(interfaceDocAttributePartial),
     installAttributePartial(refTargetAttributePartial),
     installAttributePartial(enumValuesAttributePartial),
   ]);
@@ -87,8 +103,10 @@ function queryWhetherExtensionAttributesAreInstalled(apiUrl, dbAlias) {
   const extensionAttributesQueryPartial = [
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeNameAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeNamespaceAttributeIdent]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeDocAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceNameAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceImplementationsAttributeIdent]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceDocAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), refTargetAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), enumValuesAttributeIdent]),
   ];

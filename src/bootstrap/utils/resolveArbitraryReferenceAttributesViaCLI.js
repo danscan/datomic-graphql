@@ -13,6 +13,7 @@ const SYSTEM_ATTRIBUTE_NAMESPACES = [':db', ':fressian', ':extGraphQL'];
 const ENUM = 'ENUM';
 const INTERFACE = 'INTERFACE';
 const NEW_INTERFACE = 'NEW_INTERFACE';
+const SKIP = 'SKIP';
 
 export default (apiUrl, dbAlias) => {
   const db = consumer(apiUrl, dbAlias);
@@ -122,7 +123,7 @@ function buildNewInterfaceAttributeTransaction(attributeIdent, spec, db) {
     edn.kw(':extGraphQL.interface/name'), name,
     edn.kw(':extGraphQL.interface/implementations'), new edn.Vector(typeEntities),
   ])])))
-  .then((newInterface) => {
+  .then(() => {
     return new edn.Map([
       edn.kw(':db/id'), edn.kw(attributeIdent),
       edn.kw(':extGraphQL/refTarget'), newInterfaceLookupRef,
@@ -142,6 +143,7 @@ function promptForArbitraryReferenceTypeSpecification({ ident, doc }, installedT
     choices: [
       ENUM,
       INTERFACE,
+      SKIP,
       new Separator(),
       ...pluck(installedTypes, ':extGraphQL.type/name'),
     ],
@@ -154,6 +156,11 @@ function promptForArbitraryReferenceTypeSpecification({ ident, doc }, installedT
     // if user selected interface, prompt for types
     if (refTarget === INTERFACE) {
       return promptForInterfaceSpecification({ ident, doc }, installedTypes, installedInterfaces, aggregateAnswers);
+    }
+
+    // If user selected to skip, skip...
+    if (refTarget === SKIP) {
+      return aggregateAnswers;
     }
 
     return [

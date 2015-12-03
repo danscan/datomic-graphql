@@ -1,7 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import graphQLHTTP from 'express-graphql';
-import bootstrap from '../src';
+import getGraphQLSchema from '../src';
 
 // Configuration constants
 const PORT = process.env.PORT || 8000;
@@ -9,12 +9,13 @@ const SESSION_SECRET = process.env.SESSION_SECRET || 'keyboard cat';
 const DATOMIC_REST_API_URL = process.env.DATOMIC_REST_API_URL || 'http://localhost:8080';
 const DATOMIC_DB_ALIAS = process.env.DATOMIC_DB_ALIAS || 'dev/mbrainz-1968-1973';
 
-bootstrap(DATOMIC_REST_API_URL, DATOMIC_DB_ALIAS)
+// Create HTTP server
+// const app = express();
+
+getGraphQLSchema(DATOMIC_REST_API_URL, DATOMIC_DB_ALIAS)
+  .then(graphQLSchema => console.log('graphQLSchema:', graphQLSchema))
   .catch(error => console.error(error.stack || error));
 
-// // Create HTTP server
-// const app = express();
-//
 // // Create graphql schema
 // createGraphQLSchema(DATOMIC_REST_API_URL, DATOMIC_DB_ALIAS)
 //   .then(graphQLSchema => {

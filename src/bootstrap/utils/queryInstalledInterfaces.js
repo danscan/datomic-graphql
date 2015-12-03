@@ -10,6 +10,7 @@ export default (apiUrl, dbAlias) => {
         edn.sym('pull'), edn.sym('?e'), new edn.Vector([
           edn.kw(':extGraphQL.interface/name'),
           new edn.Map([edn.kw(':extGraphQL.interface/implementations'), new edn.Vector([edn.kw(':db/ident'), edn.kw(':extGraphQL.type/name')])]),
+          edn.kw(':extGraphQL.interface/doc'),
         ]),
       ]),
       edn.sym('...'),
