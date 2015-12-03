@@ -2,6 +2,6 @@
 ; Just copy and paste this into the q field in the Query REST API
 [:find
   [(pull ?e [
-    :extGraphQL.interface/name
-    {:extGraphQL.implementations [:db/ident :extGraphQL.type/name]}
+    :extGraphQL.type/name
+    :extGraphQL.type/namespace
   ]) ...] :where [?e :extGraphQL.type/name _]]

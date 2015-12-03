@@ -22,6 +22,7 @@ export default function getGraphQLTypeForValueType(valueType) {
   case 'bytes':
     return GraphQLString;
   case 'ref':
+    // FIXME: This should resolve to the right target type or enum, or use node interface
     return ARBITRARY_REFERENCE_TYPE;
   default:
     return null;

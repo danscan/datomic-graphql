@@ -1,4 +1,5 @@
-import Vorpal from 'vorpal';
+import bootstrap from './bootstrap';
 
-// Instantiate vorpal
-const vorpal = new Vorpal();
+export default (apiUrl, dbAlias) => {
+  return bootstrap(apiUrl, dbAlias);
+};
