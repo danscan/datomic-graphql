@@ -12,8 +12,7 @@
   "dependencies": {
     "express": "^4.13.3",
     "express-graphql": "^0.4.4",
-    "express-session": "^1.12.1",
-    "i": "^0.3.3"
+    "express-session": "^1.12.1"
   },
   "devDependencies": {
     "babel-eslint": "^4.1.5",

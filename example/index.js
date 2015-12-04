@@ -10,36 +10,33 @@ const DATOMIC_REST_API_URL = process.env.DATOMIC_REST_API_URL || 'http://localho
 const DATOMIC_DB_ALIAS = process.env.DATOMIC_DB_ALIAS || 'dev/mbrainz-1968-1973';
 
 // Create HTTP server
-// const app = express();
+const app = express();
 
+// Get graphql schema
 getGraphQLSchema(DATOMIC_REST_API_URL, DATOMIC_DB_ALIAS)
-  .then(graphQLSchema => console.log('graphQLSchema:', graphQLSchema))
-  .catch(error => console.error(error.stack || error));
+  // .then(graphQLSchema => console.log('graphQLSchema:', graphQLSchema))
+  .then(graphQLSchema => {
+    // Expose session middleware at root
+    app.use('/', session({
+      secret: SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      },
+    }));
 
-// // Create graphql schema
-// createGraphQLSchema(DATOMIC_REST_API_URL, DATOMIC_DB_ALIAS)
-//   .then(graphQLSchema => {
-//     // Expose session middleware at root
-//     app.use('/', session({
-//       secret: SESSION_SECRET,
-//       resave: false,
-//       saveUninitialized: false,
-//       cookie: {
-//         maxAge: 1000 * 60 * 60 * 24 * 7,
-//       },
-//     }));
-//
-//     // Expose (session-aware) GraphQL interface to schema at root
-//     app.use('/', graphQLHTTP(request => ({
-//       schema: graphQLSchema,
-//       rootValue: {
-//         session: request.session,
-//       },
-//       pretty: true,
-//       graphiql: true,
-//     })));
-//
-//     // Listen HTTP server on configured port
-//     app.listen(PORT, () => console.log(`App listening on port ${PORT}...`));
-//   })
-//   .catch(error => console.error('Error:', error.stack || error));
+    // Expose (session-aware) GraphQL interface to schema at root
+    app.use('/', graphQLHTTP(request => ({
+      schema: graphQLSchema,
+      rootValue: {
+        session: request.session,
+      },
+      pretty: true,
+      graphiql: true,
+    })));
+
+    // Listen HTTP server on configured port
+    app.listen(PORT, () => console.log(`App listening on port ${PORT}...`));
+  })
+  .catch(error => console.error('Error:', error.stack || error));

@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 import { connectionDefinitions, globalIdField } from 'graphql-relay';
-import { getGraphQLTypeForAttribute } from './getGraphQLTypeForAttribute';
+import getGraphQLTypeForAttribute from './getGraphQLTypeForAttribute';
 import { nodeInterface } from './nodeDefinitions';
 import { mapObject } from 'underscore';
 
@@ -14,12 +14,12 @@ export function registerEntityType(entityType, entityTypeName) {
   return registeredType;
 }
 
-export function getRegisteredTypeForValueType(valueType) {
-  return types[_getRegisteredTypeName(valueType)];
+export function getRegisteredTypeForTypeName(typeName) {
+  return types[_getRegisteredTypeName(typeName)];
 }
 
-export function getRegisteredConnectionTypeForValueType(valueType) {
-  return types[_getRegisteredConnectionTypeName(valueType)];
+export function getRegisteredConnectionTypeForTypeName(typeName) {
+  return types[_getRegisteredConnectionTypeName(typeName)];
 }
 
 // Private helpers
@@ -38,12 +38,12 @@ function _createType(entityType, entityTypeName) {
   });
 }
 
-function _registerType(type, valueType) {
-  const registeredTypeName = _getRegisteredTypeName(valueType);
+function _registerType(type, typeName) {
+  const registeredTypeName = _getRegisteredTypeName(typeName);
   const registeredType = types[registeredTypeName] = type;
 
   // Register connection type for registered type
-  _registerConnectionType(registeredType, valueType);
+  _registerConnectionType(registeredType, typeName);
 
   return registeredType;
 }
@@ -55,14 +55,14 @@ function _registerConnectionType(registeredType, connectionTypeName) {
   return registeredConnectionType;
 }
 
-export function _getRegisteredTypeName(valueType) {
-  const registeredTypeName = `${valueType}Type`;
+export function _getRegisteredTypeName(typeName) {
+  const registeredTypeName = `${typeName}`;
 
   return registeredTypeName;
 }
 
-export function _getRegisteredConnectionTypeName(valueType) {
-  const registeredTypeName = `${valueType}ConnectionType`;
+export function _getRegisteredConnectionTypeName(typeName) {
+  const registeredTypeName = `${typeName}Connection`;
 
   return registeredTypeName;
 }

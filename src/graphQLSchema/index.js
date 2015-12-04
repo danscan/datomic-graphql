@@ -1,9 +1,12 @@
-import { GraphQLObjectType, GraphQLSchema } from 'graphql';
-import { registerEntityType, getRegisteredTypeForValueType, getRegisteredConnectionTypeForValueType } from './utils/typeRegistry';
+import { GraphQLSchema } from 'graphql';
+import { registerEntityType } from './utils/typeRegistry';
+import createRootQueryType from './utils/createRootQueryType';
 import { map } from 'underscore';
 
 export default (apiUrl, dbAlias, schemaImpliedTypes) => {
   const registeredTypes = map(schemaImpliedTypes, (entityType, entityTypeName) => registerEntityType(entityType, entityTypeName));
 
-  return registeredTypes;
+  return new GraphQLSchema({
+    query: createRootQueryType(registeredTypes),
+  });
 };

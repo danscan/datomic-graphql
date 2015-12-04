@@ -26,3 +26,16 @@ export function getTypeNamespaceFromTypeName(typeName) {
 
   return typeNamespace;
 }
+
+export function getInstanceQueryFieldNameFromTypeName(typeName) {
+  const instanceQueryFieldName = inflect.camelize(typeName, false);
+
+  return instanceQueryFieldName;
+}
+
+export function getCollectionQueryFieldNameFromTypeName(typeName) {
+  const instanceQueryFieldName = getInstanceQueryFieldNameFromTypeName(typeName);
+  const collectionQueryFieldName = inflect.pluralize(instanceQueryFieldName);
+
+  return collectionQueryFieldName;
+}
