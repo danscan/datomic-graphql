@@ -1,9 +1,9 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
-import queryInstalledTypes from './queryInstalledTypes';
-import querySchemaImpliedTypes from './querySchemaImpliedTypes';
+import queryInstalledTypes from '../../utils/queryInstalledTypes';
+import querySchemaImpliedTypes from '../../utils/querySchemaImpliedTypes';
 import { getTypeNamespaceFromTypeName } from '../../utils/inflect';
-import { difference, isEmpty, keys, pluck } from 'underscore';
+import { difference, isEmpty, keys } from 'underscore';
 
 export default (apiUrl, dbAlias) => {
   const db = consumer(apiUrl, dbAlias);
@@ -14,7 +14,7 @@ export default (apiUrl, dbAlias) => {
   ])
   .then(([schemaImpliedTypes, installedTypes]) => {
     const schemaImpliedTypeNames = keys(schemaImpliedTypes);
-    const installedTypeNames = pluck(installedTypes, ':extGraphQL.type/name');
+    const installedTypeNames = keys(installedTypes);
     const typesNamesToInstall = difference(schemaImpliedTypeNames, installedTypeNames);
     const typesNamesToRetract = difference(installedTypeNames, schemaImpliedTypeNames);
 

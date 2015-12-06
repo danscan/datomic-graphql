@@ -33,9 +33,9 @@ export function getInstanceQueryFieldNameFromTypeName(typeName) {
   return instanceQueryFieldName;
 }
 
-export function getCollectionQueryFieldNameFromTypeName(typeName) {
+export function getConnectionQueryFieldNameFromTypeName(typeName) {
   const instanceQueryFieldName = getInstanceQueryFieldNameFromTypeName(typeName);
-  const collectionQueryFieldName = inflect.pluralize(instanceQueryFieldName);
+  const connectionQueryFieldName = inflect.pluralize(instanceQueryFieldName);
 
-  return collectionQueryFieldName;
+  return connectionQueryFieldName;
 }

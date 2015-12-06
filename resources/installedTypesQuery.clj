@@ -4,4 +4,6 @@
   [(pull ?e [
     :extGraphQL.type/name
     :extGraphQL.type/namespace
+    :extGraphQL.type/doc
+    {:extGraphQL/_refTarget [:db/ident]}
   ]) ...] :where [?e :extGraphQL.type/name _]]

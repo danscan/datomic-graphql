@@ -1,34 +1,68 @@
 import { GraphQLObjectType } from 'graphql';
-import { nodeField } from './nodeDefinitions';
-import { getInstanceQueryFieldNameFromTypeName, getCollectionQueryFieldNameFromTypeName } from '../../utils/inflect';
-import { getRegisteredTypeForTypeName, getRegisteredConnectionTypeForTypeName } from './typeRegistry';
+import { connectionArgs, connectionFromArray } from 'graphql-relay';
+import { getInstanceQueryFieldNameFromTypeName, getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
+import getGraphQLTypeForSchemaType from './getGraphQLTypeForSchemaType';
+import getGraphQLConnectionTypeForSchemaType from './getGraphQLConnectionTypeForSchemaType';
+import getNodeDefinitions from './getNodeDefinitions';
+import getSchemaTypesAndInterfaces from '../../utils/getSchemaTypesAndInterfaces';
+import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
+import { reduce } from 'underscore';
 
-export default (registeredTypes) => {
-  return new GraphQLObjectType({
-    name: 'Query',
-    description: 'Root query type',
-    fields: () => ({
-      // Relay root query node field
-      node: nodeField,
+export default (apiUrl, dbAlias) => {
+  const { nodeField } = getNodeDefinitions(apiUrl, dbAlias);
 
-      ...generateQueryFieldsForRegisteredTypes(registeredTypes),
-    }),
-  });
+  return generateRootQueryFields(apiUrl, dbAlias)
+    .then(rootQueryFields => {
+      return new GraphQLObjectType({
+        name: 'Query',
+        description: 'Root query type',
+        fields: () => ({
+          // Relay root query node field
+          node: nodeField,
+
+          ...rootQueryFields,
+        }),
+      });
+    });
 };
 
-function generateQueryFieldsForRegisteredTypes(registeredTypes) {
-  return registeredTypes.reduce((aggregateFields, type) => {
-    const instanceQueryFieldName = getInstanceQueryFieldNameFromTypeName(type.name);
-    const collectionQueryFieldName = getCollectionQueryFieldNameFromTypeName(type.name);
+function generateRootQueryFields(apiUrl, dbAlias) {
+  return getSchemaTypesAndInterfaces(apiUrl, dbAlias)
+    .then(({ schemaTypes, schemaInterfaces }) => {
+      return reduce(schemaTypes, (aggregateFields, schemaType, schemaTypeName) => {
+        // Field names
+        const instanceQueryFieldName = getInstanceQueryFieldNameFromTypeName(schemaTypeName);
+        const connectionQueryFieldName = getConnectionQueryFieldNameFromTypeName(schemaTypeName);
 
-    return {
-      ...aggregateFields,
-      [instanceQueryFieldName]: {
-        type: getRegisteredTypeForTypeName(type.name),
-      },
-      [collectionQueryFieldName]: {
-        type: getRegisteredConnectionTypeForTypeName(type.name),
-      },
-    };
-  }, {});
+        // Field output types
+        const instanceGraphQLType = getGraphQLTypeForSchemaType(schemaType, schemaTypeName);
+        const connectionGraphQLType = getGraphQLConnectionTypeForSchemaType(schemaType, schemaTypeName);
+
+        return {
+          ...aggregateFields,
+          [instanceQueryFieldName]: {
+            type: instanceGraphQLType,
+            args: getQueryInputArgsForSchemaType(schemaType, schemaTypeName),
+            resolve: (query, args) => resolveInstanceFieldQuery(query, args),
+          },
+          [connectionQueryFieldName]: {
+            type: connectionGraphQLType,
+            args: { ...getQueryInputArgsForSchemaType(schemaType, schemaTypeName), ...connectionArgs },
+            resolve: (query, args) => resolveConnectionFieldQuery(query, args),
+          },
+        };
+      }, {});
+    });
+}
+
+function resolveInstanceFieldQuery(query, args) {
+  console.log('resolveInstanceFieldQuery... query:', query);
+  console.log('resolveInstanceFieldQuery... args:', args);
+  return {};
+}
+
+function resolveConnectionFieldQuery(query, args) {
+  console.log('resolveConnectionFieldQuery... query:', query);
+  console.log('resolveConnectionFieldQuery... args:', args);
+  return connectionFromArray([], args);
 }

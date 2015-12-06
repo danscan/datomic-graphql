@@ -1,10 +1,10 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
 import queryArbitraryReferenceAttributes from './queryArbitraryReferenceAttributes';
-import queryInstalledTypes from './queryInstalledTypes';
-import queryInstalledInterfaces from './queryInstalledInterfaces';
+import queryInstalledTypes from '../../utils/queryInstalledTypes';
+import queryInstalledInterfaces from '../../utils/queryInstalledInterfaces';
 import { prompt, Separator } from 'inquirer';
-import { isEmpty, pluck } from 'underscore';
+import { isEmpty, keys } from 'underscore';
 
 // (Configuration contants)
 const SYSTEM_ATTRIBUTE_NAMESPACES = [':db', ':fressian', ':extGraphQL'];
@@ -145,7 +145,7 @@ function promptForArbitraryReferenceTypeSpecification({ ident, doc }, installedT
       INTERFACE,
       SKIP,
       new Separator(),
-      ...pluck(installedTypes, ':extGraphQL.type/name'),
+      ...keys(installedTypes),
     ],
   }], ({ refTarget }) => {
     // if user selected enum for, prompt for prefix
@@ -194,7 +194,7 @@ function promptForInterfaceSpecification({ ident, doc }, installedTypes, install
     choices: [
       NEW_INTERFACE,
       new Separator(),
-      ...pluck(installedInterfaces, ':extGraphQL.type/name'),
+      ...keys(installedInterfaces),
     ],
   }], ({ interfaceChoice }) => {
     // if user selected enum for, prompt for prefix
@@ -219,7 +219,7 @@ function promptForNewInterfaceSpecification({ ident, doc }, installedTypes, aggr
     type: 'checkbox',
     message: 'Choose the types that should implement the interface',
     choices: [
-      ...pluck(installedTypes, ':extGraphQL.type/name'),
+      ...keys(installedTypes),
     ],
   }], ({ name, types }) => {
     return [

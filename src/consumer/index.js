@@ -47,6 +47,24 @@ export default (apiUrl, dbAlias) => {
       })
       .then(response => parseEdnResponse(response));
     },
+
+    getEntity(e, { basisT = '-', asOf, since }) {
+      const getEntityUrl = `${apiUrl}/data/${dbAlias}/${basisT}/entity`;
+
+      return axios({
+        method: 'get',
+        url: getEntityUrl,
+        params: {
+          e,
+          asOf,
+          since,
+        },
+        headers: {
+          'Accept': EDN_MIME_TYPE,
+        },
+      })
+      .then(response => parseEdnResponse(response));
+    },
   };
 };
 

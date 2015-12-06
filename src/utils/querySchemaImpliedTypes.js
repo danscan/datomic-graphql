@@ -1,6 +1,6 @@
-import consumer from '../../consumer';
+import consumer from '../consumer';
 import edn from 'jsedn';
-import { getAttributeNameFromAttributeIdent, getTypeNameFromAttributeIdent } from '../../utils/inflect';
+import { getAttributeNameFromAttributeIdent, getTypeNameFromAttributeIdent } from './inflect';
 import { reduce } from 'underscore';
 
 // (Value constants)

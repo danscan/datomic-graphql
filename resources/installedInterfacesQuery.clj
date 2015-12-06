@@ -1,7 +1,9 @@
-; This query gets installed types
+; This query gets installed interfaces
 ; Just copy and paste this into the q field in the Query REST API
 [:find
   [(pull ?e [
     :extGraphQL.interface/name
-    {:extGraphQL.implementations [:db/ident :extGraphQL.type/name]}
-  ]) ...] :where [?e :extGraphQL.type/name _]]
+    {:extGraphQL.interface/implementations [:db/ident :extGraphQL.type/name]}
+    :extGraphQL.interface/doc
+    {:extGraphQL/_refTarget [:db/ident]}
+  ]) ...] :where [?e :extGraphQL.interface/name _]]
