@@ -46,6 +46,6 @@ export default (apiUrl, dbAlias) => {
           doc,
           reverseReferenceFields,
         },
-      }
+      };
     }, {}));
 };

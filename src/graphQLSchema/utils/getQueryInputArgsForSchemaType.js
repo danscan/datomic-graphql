@@ -25,7 +25,7 @@ export default function getQueryInputArgsForSchemaType(schemaType, schemaTypeNam
   schemaTypePredicateTypes[schemaTypePredicateTypeName] = schemaTypePredicateTypes[schemaTypePredicateTypeName] || new GraphQLInputObjectType({
     name: schemaTypePredicateTypeName,
     fields: schemaTypePredicateFields,
-  })
+  });
   const schemaTypePredicateInputObject = schemaTypePredicateTypes[schemaTypePredicateTypeName];
 
   // Get predicate fields for reverse reference attributes
