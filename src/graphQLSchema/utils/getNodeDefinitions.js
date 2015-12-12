@@ -22,4 +22,4 @@ export default function getNodeDefinitions(apiUrl, dbAlias) {
       return null;
     }
   );
-};
+}

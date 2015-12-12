@@ -1,6 +1,9 @@
 import { GraphQLObjectType } from 'graphql';
+import { connectionArgs } from 'graphql-relay';
 import getGraphQLTypeForAttribute from './getGraphQLTypeForAttribute';
+import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
 import { getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
+import { connectionTypes } from './getGraphQLConnectionTypeForSchemaType';
 import { reduce } from 'underscore';
 
 export const types = {};
@@ -10,19 +13,36 @@ export default function _getGraphQLTypeForSchemaType(schemaType, schemaTypeName)
     name: schemaTypeName,
     description: schemaType.doc,
     fields: () => reduce(schemaType.attributes, (aggregateFields, attribute, attributeName) => {
+      const attributeHasRefTarget = !!attribute.refTarget;
+      const attributeFieldIsConnection = attribute.cardinality === 'many';
+      const attributeQueryInputArgs = attributeHasRefTarget
+                                    ? getQueryInputArgsForSchemaType(types[attribute.refTarget], attribute.refTarget)
+                                    : {};
+      const attributeFieldArgs = attributeHasRefTarget && attributeFieldIsConnection
+                                ? { ...attributeQueryInputArgs, ...connectionArgs }
+                                : null;
+
       return {
         ...aggregateFields,
         [attributeName]: {
           type: getGraphQLTypeForAttribute(attribute, attributeName),
+          args: attributeFieldArgs,
           description: attribute.doc,
         },
         ...reduce(schemaType.reverseReferenceFields, (aggregateReverseReferenceFields, reverseReferenceField) => {
-          const fieldName = getConnectionQueryFieldNameFromTypeName(reverseReferenceField.type);
+          const typeName = reverseReferenceField.type;
+          const fieldName = getConnectionQueryFieldNameFromTypeName(typeName);
+          const instanceType = types[typeName];
+          const connectionType = connectionTypes[typeName];
 
           return {
             ...aggregateReverseReferenceFields,
             [fieldName]: {
-              type: types[reverseReferenceField.type],
+              type: connectionType,
+              args: {
+                ...getQueryInputArgsForSchemaType(instanceType, typeName),
+                ...connectionArgs,
+              },
               description: `${reverseReferenceField.type}s that refer to the ${schemaTypeName} via their '${reverseReferenceField.field}' field`,
             },
           };
@@ -32,4 +52,4 @@ export default function _getGraphQLTypeForSchemaType(schemaType, schemaTypeName)
   });
 
   return types[schemaTypeName];
-};
+}
