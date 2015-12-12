@@ -3,7 +3,7 @@ import { connectionArgs, connectionFromArray } from 'graphql-relay';
 import { getInstanceQueryFieldNameFromTypeName, getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
 import getGraphQLTypeForSchemaType from './getGraphQLTypeForSchemaType';
 import getGraphQLConnectionTypeForSchemaType from './getGraphQLConnectionTypeForSchemaType';
-import getNodeDefinitions from './getNodeDefinitions';
+import { nodeField } from '../nodeDefinitions';
 import getSchemaTypesAndInterfaces from '../../utils/getSchemaTypesAndInterfaces';
 import getQueryEdnFromArgsAndContext from './getQueryEdnFromArgsAndContext';
 import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
@@ -11,8 +11,6 @@ import consumer from '../../consumer';
 import { reduce } from 'underscore';
 
 export default (apiUrl, dbAlias) => {
-  const { nodeField } = getNodeDefinitions(apiUrl, dbAlias);
-
   return generateRootQueryFields(apiUrl, dbAlias)
     .then(rootQueryFields => {
       return new GraphQLObjectType({

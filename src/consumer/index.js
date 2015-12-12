@@ -48,7 +48,7 @@ export default (apiUrl, dbAlias) => {
       .then(response => parseEdnResponse(response));
     },
 
-    getEntity(e, { basisT = '-', asOf, since }) {
+    getEntity(e, { basisT = '-', asOf, since } = {}) {
       const getEntityUrl = `${apiUrl}/data/${dbAlias}/${basisT}/entity`;
 
       return axios({

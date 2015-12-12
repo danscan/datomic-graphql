@@ -1,7 +1,8 @@
 import { GraphQLObjectType } from 'graphql';
-import { connectionArgs } from 'graphql-relay';
+import { connectionArgs, globalIdField } from 'graphql-relay';
 import getGraphQLTypeForAttribute from './getGraphQLTypeForAttribute';
 import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
+import { nodeInterface } from '../nodeDefinitions';
 import { getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
 import { connectionTypes } from './getGraphQLConnectionTypeForSchemaType';
 import { reduce } from 'underscore';
@@ -9,6 +10,8 @@ import { reduce } from 'underscore';
 export const types = {};
 
 export default function _getGraphQLTypeForSchemaType(schemaType, schemaTypeName) {
+  const initialFields = { id: globalIdField(schemaTypeName) };
+
   types[schemaTypeName] = types[schemaTypeName] || new GraphQLObjectType({
     name: schemaTypeName,
     description: schemaType.doc,
@@ -48,7 +51,8 @@ export default function _getGraphQLTypeForSchemaType(schemaType, schemaTypeName)
           };
         }, {}),
       };
-    }, {}),
+    }, initialFields),
+    interfaces: [nodeInterface],
   });
 
   return types[schemaTypeName];

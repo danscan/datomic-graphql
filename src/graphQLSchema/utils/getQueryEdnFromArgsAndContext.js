@@ -37,6 +37,7 @@ export default (args, context, connection = false) => {
   }, {});
   console.log('filteredArgs:', filteredArgs);
   console.log('transformedArgs:', transformedArgs);
+  // TODO: Get datomic attribute name from arg name and type (what about reverse?)...
   // const argVectors = reduce(transformedArgs, (aggregateArgVectors, argOperand, argOperator) => {
   //   return [
   //     ...aggregateArgVectors,

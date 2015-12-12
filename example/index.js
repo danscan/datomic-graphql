@@ -3,7 +3,7 @@ import session from 'express-session';
 import graphQLHTTP from 'express-graphql';
 import getGraphQLSchema from '../src';
 
-// Configuration constants
+// (Configuration constants)
 const PORT = process.env.PORT || 8000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'keyboard cat';
 const DATOMIC_REST_API_URL = process.env.DATOMIC_REST_API_URL || 'http://localhost:8080';
