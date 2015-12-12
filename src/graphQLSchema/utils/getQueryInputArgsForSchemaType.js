@@ -29,7 +29,7 @@ export default function getQueryInputArgsForSchemaType(schemaType, schemaTypeNam
   const schemaTypePredicateInputObject = schemaTypePredicateTypes[schemaTypePredicateTypeName];
 
   // Get predicate fields for reverse reference attributes
-  console.log(`schemaTypeName "${schemaTypeName}"... schemaType:`, schemaType);
+  // console.log(`schemaTypeName "${schemaTypeName}"... schemaType:`, schemaType);
   const reverseReferencePredicateFields = reduce(schemaType.reverseReferenceFields, (aggregateReverseReferencePredicateFields, reverseReferenceField) => {
     const reverseReferencePredicateFieldName = getConnectionQueryFieldNameFromTypeName(reverseReferenceField.type);
     const reverseReferencePredicateFieldType = schemaTypePredicateTypes[`${reverseReferenceField.type}Predicate`];
