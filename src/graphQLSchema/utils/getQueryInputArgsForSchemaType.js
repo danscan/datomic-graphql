@@ -29,7 +29,7 @@ export default function getQueryInputArgsForSchemaType(schemaType, schemaTypeNam
   const schemaTypePredicateInputObject = schemaTypePredicateTypes[schemaTypePredicateTypeName];
 
   // Get predicate fields for reverse reference attributes
-  // console.log('schemaType.reverseReferenceFields:', schemaType.reverseReferenceFields);
+  console.log(`schemaTypeName "${schemaTypeName}"... schemaType:`, schemaType);
   const reverseReferencePredicateFields = reduce(schemaType.reverseReferenceFields, (aggregateReverseReferencePredicateFields, reverseReferenceField) => {
     const reverseReferencePredicateFieldName = getConnectionQueryFieldNameFromTypeName(reverseReferenceField.type);
     const reverseReferencePredicateFieldType = schemaTypePredicateTypes[`${reverseReferenceField.type}Predicate`];
@@ -46,11 +46,13 @@ export default function getQueryInputArgsForSchemaType(schemaType, schemaTypeNam
       [reverseReferencePredicateFieldName]: { type: reverseReferencePredicateFieldType },
     };
   }, {});
+  // console.log('schemaTypePredicateFields:', schemaTypePredicateFields);
+  // console.log('reverseReferencePredicateFields:', reverseReferencePredicateFields);
 
   return {
     ...schemaTypePredicateFields,
 
-    // ...reverseReferencePredicateFields,
+    ...reverseReferencePredicateFields,
 
     not: { type: schemaTypePredicateInputObject },
     or: { type: new GraphQLList(schemaTypePredicateInputObject) },
@@ -63,6 +65,7 @@ function getAttributePredicateType(attribute, attributeName, schemaTypeName) {
 
   // Bail / recurse if attribute GraphQL type isn't a valid input type
   if (attribute.valueType === 'ref' && attribute.refTarget) {
+    // FIXME: Returns undefined if predicate for refTarget isn't in schemaTypePredicateTypes yet...
     return schemaTypePredicateTypes[`${attribute.refTarget}Predicate`];
   } else if (attribute.valueType === 'ref' && !attribute.enumValues) {
     return null;
