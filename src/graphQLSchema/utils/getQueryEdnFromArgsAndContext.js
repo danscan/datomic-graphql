@@ -66,6 +66,7 @@ function getQueryEdgeNodeFields(context, fieldASTs = context.fieldASTs) {
   return keys(first(values(selections)).edges.node);
 }
 
+// FIXME: Make this work with fragment spreads
 function reduceBranch(tree, branch) {
   // console.log('tree:', tree);
   // console.log('branch:', branch);
