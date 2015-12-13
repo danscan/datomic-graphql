@@ -6,7 +6,7 @@ import getNodeDefinitions from '../getNodeDefinitions';
 import getGraphQLTypeForSchemaType from '../utils/getGraphQLTypeForSchemaType';
 import getGraphQLConnectionTypeForSchemaType from '../utils/getGraphQLConnectionTypeForSchemaType';
 import getSchemaTypesAndInterfaces from '../../utils/getSchemaTypesAndInterfaces';
-import getQueryEdnFromArgsAndContext from './utils/getQueryEdnFromArgsAndContext';
+import getQueryEdnFromContext from './utils/getQueryEdnFromContext';
 import getQueryInputArgsForSchemaType from '../utils/getQueryInputArgsForSchemaType';
 import { reduce } from 'underscore';
 
@@ -61,7 +61,8 @@ function generateRootQueryFields(apiUrl, dbAlias) {
 
 function resolveInstanceFieldQuery({ query, args, context, db }) {
   console.log('resolveInstanceFieldQuery... query:', query);
-  const queryEdn = getQueryEdnFromArgsAndContext(args, context);
+  console.log('resolveInstanceFieldQuery... args:', args);
+  const queryEdn = getQueryEdnFromContext(context);
 
   return db.query(queryEdn)
     .then(results => results[0] || null);
@@ -69,7 +70,8 @@ function resolveInstanceFieldQuery({ query, args, context, db }) {
 
 function resolveConnectionFieldQuery({ query, args, context, db }) {
   console.log('resolveConnectionFieldQuery... query:', query);
-  const queryEdn = getQueryEdnFromArgsAndContext(args, context, true);
+  console.log('resolveConnectionFieldQuery... args:', args);
+  const queryEdn = getQueryEdnFromContext(context);
 
   return db.query(queryEdn)
     .then(results => connectionFromArray(results, args));
