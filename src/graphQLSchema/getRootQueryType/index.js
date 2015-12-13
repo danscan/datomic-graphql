@@ -6,7 +6,7 @@ import getNodeDefinitions from '../getNodeDefinitions';
 import getGraphQLTypeForSchemaType from '../utils/getGraphQLTypeForSchemaType';
 import getGraphQLConnectionTypeForSchemaType from '../utils/getGraphQLConnectionTypeForSchemaType';
 import getSchemaTypesAndInterfaces from '../../utils/getSchemaTypesAndInterfaces';
-import getQueryEdnFromContext from './utils/getQueryEdnFromContext';
+import getQueryEdnFromResolveInfo from './utils/getQueryEdnFromResolveInfo';
 import getQueryInputArgsForSchemaType from '../utils/getQueryInputArgsForSchemaType';
 import { reduce } from 'underscore';
 
@@ -47,31 +47,31 @@ function generateRootQueryFields(apiUrl, dbAlias) {
           [instanceQueryFieldName]: {
             type: instanceGraphQLType,
             args: getQueryInputArgsForSchemaType(schemaType, schemaTypeName),
-            resolve: (query, args, context) => resolveInstanceFieldQuery({ query, args, context, db }),
+            resolve: (query, args, resolveInfo) => resolveInstanceFieldQuery({ query, args, resolveInfo, db }),
           },
           [connectionQueryFieldName]: {
             type: connectionGraphQLType,
             args: { ...getQueryInputArgsForSchemaType(schemaType, schemaTypeName), ...connectionArgs },
-            resolve: (query, args, context) => resolveConnectionFieldQuery({ query, args, context, db }),
+            resolve: (query, args, resolveInfo) => resolveConnectionFieldQuery({ query, args, resolveInfo, db }),
           },
         };
       }, {});
     });
 }
 
-function resolveInstanceFieldQuery({ query, args, context, db }) {
+function resolveInstanceFieldQuery({ query, args, resolveInfo, db }) {
   console.log('resolveInstanceFieldQuery... query:', query);
   console.log('resolveInstanceFieldQuery... args:', args);
-  const queryEdn = getQueryEdnFromContext(context);
+  const queryEdn = getQueryEdnFromResolveInfo(resolveInfo);
 
   return db.query(queryEdn)
     .then(results => results[0] || null);
 }
 
-function resolveConnectionFieldQuery({ query, args, context, db }) {
+function resolveConnectionFieldQuery({ query, args, resolveInfo, db }) {
   console.log('resolveConnectionFieldQuery... query:', query);
   console.log('resolveConnectionFieldQuery... args:', args);
-  const queryEdn = getQueryEdnFromContext(context);
+  const queryEdn = getQueryEdnFromResolveInfo(resolveInfo);
 
   return db.query(queryEdn)
     .then(results => connectionFromArray(results, args));

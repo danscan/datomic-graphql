@@ -21,11 +21,11 @@ export const operatorMap = {
 // Array of fields to exclude from query edn
 // export const excludeFields = keys(connectionArgs);
 
-export default function getQueryEdnFromContext(context) {
-  console.log('getQueryEdnFromContext... context:', context);
+export default function getQueryEdnFromResolveInfo(resolveInfo) {
+  console.log('getQueryEdnFromResolveInfo... resolveInfo:', resolveInfo);
   // const queryFields = !connection
-  //                   ? getQueryFields(context)
-  //                   : getQueryEdgeNodeFields(context);
+  //                   ? getQueryFields(resolveInfo)
+  //                   : getQueryEdgeNodeFields(resolveInfo);
   // console.log('queryFields:', queryFields);
   // const filteredArgs = omit(args, excludeFields);
   // const transformedArgs = reduce(args, (aggregateArgs, argValue, argKey) => {
@@ -55,14 +55,14 @@ export default function getQueryEdnFromContext(context) {
   // ]);
 }
 
-// function getQueryFields(context, fieldASTs = context.fieldASTs) {
+// function getQueryFields(resolveInfo, fieldASTs = resolveInfo.fieldASTs) {
 //   const selections = fieldASTs.reduce(reduceBranch, {});
 //   console.log('selections:', selections);
 //
 //   return keys(first(values(selections)));
 // }
 //
-// function getQueryEdgeNodeFields(context, fieldASTs = context.fieldASTs) {
+// function getQueryEdgeNodeFields(resolveInfo, fieldASTs = resolveInfo.fieldASTs) {
 //   const selections = fieldASTs.reduce(reduceBranch, {});
 //   console.log('selections:', selections);
 //
