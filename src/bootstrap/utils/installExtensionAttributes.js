@@ -1,7 +1,7 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
 
-// Extension attribute idents
+// (Extension attribute idents)
 const typeNameAttributeIdent = edn.kw(':extGraphQL.type/name');
 const typeNamespaceAttributeIdent = edn.kw(':extGraphQL.type/namespace');
 const typeDocAttributeIdent = edn.kw(':extGraphQL.type/doc');
@@ -11,7 +11,7 @@ const interfaceDocAttributeIdent = edn.kw(':extGraphQL.interface/doc');
 const refTargetAttributeIdent = edn.kw(':extGraphQL/refTarget');
 const enumValuesAttributeIdent = edn.kw(':extGraphQL/enumValues');
 
-// Extension attributes (partials)
+// (Extension attributes (partials))
 const typeNameAttributePartial = [
   edn.kw(':db/ident'), typeNameAttributeIdent,
   edn.kw(':db/valueType'), edn.kw(':db.type/string'),

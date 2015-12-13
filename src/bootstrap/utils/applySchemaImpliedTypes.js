@@ -1,7 +1,7 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
-import queryInstalledTypes from '../../utils/queryInstalledTypes';
 import querySchemaImpliedTypes from '../../utils/querySchemaImpliedTypes';
+import queryInstalledTypes from '../../utils/queryInstalledTypes';
 import { getTypeNamespaceFromTypeName } from '../../utils/inflect';
 import { difference, isEmpty, keys } from 'underscore';
 
