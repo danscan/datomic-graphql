@@ -1,5 +1,5 @@
-import { fromGlobalId, nodeDefinitions } from 'graphql-relay';
 import consumer from '../../consumer';
+import { fromGlobalId, nodeDefinitions } from 'graphql-relay';
 import { types } from '../utils/getGraphQLTypeForSchemaType';
 import { getAttributeNameFromAttributeIdent } from '../../utils/inflect';
 import { reduce } from 'underscore';
