@@ -56,13 +56,16 @@ export default (args, context, connection = false) => {
 
 function getQueryFields(context, fieldASTs = context.fieldASTs) {
   const selections = fieldASTs.reduce(reduceBranch, {});
+  console.log('selections:', selections);
 
   return keys(first(values(selections)));
 }
 
 function getQueryEdgeNodeFields(context, fieldASTs = context.fieldASTs) {
   const selections = fieldASTs.reduce(reduceBranch, {});
+  console.log('selections:', selections);
 
+  // TODO: Reduce selections...? (selection set in selection set?)
   return keys(first(values(selections)).edges.node);
 }
 

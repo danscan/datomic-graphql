@@ -1,7 +1,7 @@
 import { fromGlobalId, nodeDefinitions } from 'graphql-relay';
-import edn from 'jsedn';
 import consumer from '../../consumer';
 import { types } from '../utils/getGraphQLTypeForSchemaType';
+import { getAttributeNameFromAttributeIdent } from '../../utils/inflect';
 import { reduce } from 'underscore';
 
 // (Configuration constants)
@@ -20,8 +20,7 @@ const { nodeField, nodeInterface } = nodeDefinitions(
       .then(entity => {
         const initialObject = { __type: type };
         const object = reduce(entity, (aggregateObject, attributeValue, attributeIdent) => {
-          const attributeKeyword = edn.kw(attributeIdent);
-          const attributeName = attributeKeyword.name;
+          const attributeName = getAttributeNameFromAttributeIdent(attributeIdent);
 
           return {
             ...aggregateObject,
