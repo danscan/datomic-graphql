@@ -1,7 +1,7 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
 
-export default (apiUrl, dbAlias) => {
+export default function queryArbitraryReferenceAttributes(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
   const arbitraryReferenceAttributesQuery = new edn.Vector([
     edn.kw(':find'), edn.sym('?ident'), edn.sym('?doc'),
@@ -18,4 +18,4 @@ export default (apiUrl, dbAlias) => {
   ]);
 
   return db.query(arbitraryReferenceAttributesQuery);
-};
+}

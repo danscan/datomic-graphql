@@ -64,7 +64,7 @@ const enumValuesAttributePartial = [
   edn.kw(':db/doc'), 'The possible values of an enumeration-type reference attribute',
 ];
 
-export default (apiUrl, dbAlias) => {
+export default function installExtensionAttributes(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
   const installExtensionAttributesTransactionEdn = new edn.Vector([
     installAttributePartial(typeNameAttributePartial),
@@ -88,7 +88,7 @@ export default (apiUrl, dbAlias) => {
       console.error('Error installing extension attributes... This can happen if some, but not all of the extesnion attributes are installed...');
       throw error;
     });
-};
+}
 
 function installAttributePartial(attributePartial) {
   return new edn.Map([

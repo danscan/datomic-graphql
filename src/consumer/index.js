@@ -3,7 +3,7 @@ import edn from 'jsedn';
 
 const EDN_MIME_TYPE = 'application/edn';
 
-export default (apiUrl, dbAlias) => {
+export default function consumer(apiUrl, dbAlias) {
   return {
     query(queryEdn) {
       const queryUrl = `${apiUrl}/api/query`;
@@ -66,7 +66,7 @@ export default (apiUrl, dbAlias) => {
       .then(response => parseEdnResponse(response));
     },
   };
-};
+}
 
 function parseEdnResponse(response, responseDefault = []) {
   return Promise.resolve(response)

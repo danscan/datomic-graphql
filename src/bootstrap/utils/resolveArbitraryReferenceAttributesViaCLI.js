@@ -15,7 +15,7 @@ const INTERFACE = 'INTERFACE';
 const NEW_INTERFACE = 'NEW_INTERFACE';
 const SKIP = 'SKIP';
 
-export default (apiUrl, dbAlias) => {
+export default function resolveArbitraryReferenceAttributesViaCLI(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
 
   return Promise.all([
@@ -74,7 +74,7 @@ export default (apiUrl, dbAlias) => {
       return db.transact(transactionsEdn);
     });
   });
-};
+}
 
 // - Transaction builder helpers -
 function buildRefTargetAttributeTransaction(attributeIdent, spec) {

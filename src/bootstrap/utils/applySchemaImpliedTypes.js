@@ -5,7 +5,7 @@ import queryInstalledTypes from '../../utils/queryInstalledTypes';
 import { getTypeNamespaceFromTypeName } from '../../utils/inflect';
 import { difference, isEmpty, keys } from 'underscore';
 
-export default (apiUrl, dbAlias) => {
+export default function applySchemaImpliedTypes(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
 
   return Promise.all([
@@ -35,7 +35,7 @@ export default (apiUrl, dbAlias) => {
 
     return db.transact(applyTypesTransactionEdn);
   });
-};
+}
 
 function getInstallTypeTransactionEdn(typeName) {
   const typeNamespace = getTypeNamespaceFromTypeName(typeName);
