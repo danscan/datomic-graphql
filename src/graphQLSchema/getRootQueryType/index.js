@@ -1,16 +1,18 @@
+import consumer from '../../consumer';
 import { GraphQLObjectType } from 'graphql';
 import { connectionArgs, connectionFromArray } from 'graphql-relay';
 import { getInstanceQueryFieldNameFromTypeName, getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
-import getGraphQLTypeForSchemaType from './getGraphQLTypeForSchemaType';
-import getGraphQLConnectionTypeForSchemaType from './getGraphQLConnectionTypeForSchemaType';
-import { nodeField } from '../nodeDefinitions';
+import getNodeDefinitions from '../getNodeDefinitions';
+import getGraphQLTypeForSchemaType from '../utils/getGraphQLTypeForSchemaType';
+import getGraphQLConnectionTypeForSchemaType from '../utils/getGraphQLConnectionTypeForSchemaType';
 import getSchemaTypesAndInterfaces from '../../utils/getSchemaTypesAndInterfaces';
-import getQueryEdnFromArgsAndContext from './getQueryEdnFromArgsAndContext';
-import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
-import consumer from '../../consumer';
+import getQueryEdnFromArgsAndContext from './utils/getQueryEdnFromArgsAndContext';
+import getQueryInputArgsForSchemaType from '../utils/getQueryInputArgsForSchemaType';
 import { reduce } from 'underscore';
 
-export default (apiUrl, dbAlias) => {
+export default function getRootQueryType(apiUrl, dbAlias) {
+  const { nodeField } = getNodeDefinitions(apiUrl, dbAlias);
+
   return generateRootQueryFields(apiUrl, dbAlias)
     .then(rootQueryFields => {
       return new GraphQLObjectType({
@@ -24,7 +26,7 @@ export default (apiUrl, dbAlias) => {
         }),
       });
     });
-};
+}
 
 function generateRootQueryFields(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
@@ -37,8 +39,8 @@ function generateRootQueryFields(apiUrl, dbAlias) {
         const connectionQueryFieldName = getConnectionQueryFieldNameFromTypeName(schemaTypeName);
 
         // Field output types
-        const instanceGraphQLType = getGraphQLTypeForSchemaType(schemaType, schemaTypeName);
-        const connectionGraphQLType = getGraphQLConnectionTypeForSchemaType(schemaType, schemaTypeName);
+        const instanceGraphQLType = getGraphQLTypeForSchemaType({ schemaType, schemaTypeName }, apiUrl, dbAlias);
+        const connectionGraphQLType = getGraphQLConnectionTypeForSchemaType({ schemaType, schemaTypeName }, apiUrl, dbAlias);
 
         return {
           ...aggregateFields,

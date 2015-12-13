@@ -21,7 +21,7 @@ export const operatorMap = {
 // Array of fields to exclude from query edn
 export const excludeFields = keys(connectionArgs);
 
-export default (args, context, connection = false) => {
+export default function getQueryEdnFromArgsAndContext(args, context, connection = false) {
   const queryFields = !connection
                     ? getQueryFields(context)
                     : getQueryEdgeNodeFields(context);
@@ -52,7 +52,7 @@ export default (args, context, connection = false) => {
   //     new edn.List([edn.sym('pull'), edn.sym('?e'), new edn.Vector(['*'])]), edn.sym('...')]),
   //     edn.kw(':where'), new edn.Vector([edn.sym('?e'), edn.kw(':extGraphQL.type/name'), edn.sym('_')]),
   // ]);
-};
+}
 
 function getQueryFields(context, fieldASTs = context.fieldASTs) {
   const selections = fieldASTs.reduce(reduceBranch, {});

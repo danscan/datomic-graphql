@@ -1,13 +1,13 @@
 import { GraphQLSchema } from 'graphql';
-import createRootQueryType from './utils/createRootQueryType';
+import getRootQueryType from './getRootQueryType';
 
-export default (apiUrl, dbAlias) => {
+export default function getGraphQLSchema(apiUrl, dbAlias) {
   return Promise.all([
-    createRootQueryType(apiUrl, dbAlias),
+    getRootQueryType(apiUrl, dbAlias),
   ])
   .then(([rootQueryType]) => {
     return new GraphQLSchema({
       query: rootQueryType,
     });
   });
-};
+}

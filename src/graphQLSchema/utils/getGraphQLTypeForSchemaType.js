@@ -2,14 +2,17 @@ import { GraphQLObjectType } from 'graphql';
 import { connectionArgs, globalIdField } from 'graphql-relay';
 import getGraphQLTypeForAttribute from './getGraphQLTypeForAttribute';
 import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
-import { nodeInterface } from '../nodeDefinitions';
+import getNodeDefinitions from '../getNodeDefinitions';
 import { getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
 import { connectionTypes } from './getGraphQLConnectionTypeForSchemaType';
 import { reduce } from 'underscore';
 
 export const types = {};
 
-export default function _getGraphQLTypeForSchemaType(schemaType, schemaTypeName) {
+export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName }, apiUrl, dbAlias) {
+  const { nodeInterface } = getNodeDefinitions(apiUrl, dbAlias);
+
+  // Initial value for fields reduction should have globalIdField (for node interface implementation)
   const initialFields = { id: globalIdField(schemaTypeName) };
 
   types[schemaTypeName] = types[schemaTypeName] || new GraphQLObjectType({
