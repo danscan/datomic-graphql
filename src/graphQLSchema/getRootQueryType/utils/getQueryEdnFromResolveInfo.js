@@ -1,6 +1,7 @@
 // import edn from 'jsedn';
 // import { connectionArgs } from 'graphql-relay';
-// import { isArray, first, keys, omit, reduce, values } from 'underscore';
+import { FIELD, FRAGMENT_SPREAD, INLINE_FRAGMENT } from 'graphql/language/kinds';
+import { contains, isArray, first, keys, omit, reduce, values } from 'underscore';
 
 // Query input field -> expression operator
 export const operatorMap = {
@@ -22,11 +23,13 @@ export const operatorMap = {
 // export const excludeFields = keys(connectionArgs);
 
 export default function getQueryEdnFromResolveInfo(resolveInfo) {
-  console.log('getQueryEdnFromResolveInfo... resolveInfo:', resolveInfo);
-  // const queryFields = !connection
-  //                   ? getQueryFields(resolveInfo)
-  //                   : getQueryEdgeNodeFields(resolveInfo);
-  // console.log('queryFields:', queryFields);
+  const { operation = {} } = resolveInfo;
+  const { selectionSet: { selections: operationSelections = [] } } = operation;
+  // console.log('getQueryEdnFromResolveInfo... resolveInfo:', resolveInfo);
+  // console.log('getQueryEdnFromResolveInfo... operationSelections:', operationSelections);
+  const queryFields = getQueryFields(resolveInfo);
+  console.log('queryFields:', queryFields);
+
   // const filteredArgs = omit(args, excludeFields);
   // const transformedArgs = reduce(args, (aggregateArgs, argValue, argKey) => {
   //   const mappedOperator = operatorMap[argKey] || argKey;
@@ -55,34 +58,68 @@ export default function getQueryEdnFromResolveInfo(resolveInfo) {
   // ]);
 }
 
-// function getQueryFields(resolveInfo, fieldASTs = resolveInfo.fieldASTs) {
-//   const selections = fieldASTs.reduce(reduceBranch, {});
-//   console.log('selections:', selections);
-//
-//   return keys(first(values(selections)));
-// }
-//
-// function getQueryEdgeNodeFields(resolveInfo, fieldASTs = resolveInfo.fieldASTs) {
-//   const selections = fieldASTs.reduce(reduceBranch, {});
-//   console.log('selections:', selections);
-//
-//   // TODO: Reduce selections...? (selection set in selection set?)
-//   return keys(first(values(selections)).edges.node);
-// }
-//
-// // FIXME: Make this work with fragment spreads
-// function reduceBranch(tree, branch) {
-//   // console.log('tree:', tree);
-//   // console.log('branch:', branch);
-//   if (branch.selectionSet && isArray(branch.selectionSet.selections)) {
-//     return {
-//       ...tree,
-//       [branch.name.value]: branch.selectionSet.selections.reduce(reduceBranch, {}),
-//     };
-//   }
-//
-//   return {
-//     ...tree,
-//     [branch.name.value]: true,
-//   };
-// }
+function getQueryFields(resolveInfo) {
+  const { fieldName, fieldASTs, schema } = resolveInfo;
+  const { _queryType: { _fields: schemaQueryFields = {} } } = schema;
+  const queryFieldType = schemaQueryFields[fieldName].type;
+  // console.log('queryFieldType:', queryFieldType);
+
+  const selectionsTree = fieldASTs.reduce(reduceFieldASTsToSelectionsTree, { tree: {}, resolveInfo }).tree;
+  const fieldSelectionsTree = selectionsTree[fieldName];
+
+  return fieldSelectionsTree;
+}
+
+function reduceFieldASTsToSelectionsTree({ tree, resolveInfo }, branch) {
+  const branchHasSelectionSet = branch.selectionSet && isArray(branch.selectionSet.selections);
+
+  // Skip branch if it's not a FRAGMENT_SPREAD, INLINE_FRAGMENT or FIELD kind
+  if (!contains([FIELD, FRAGMENT_SPREAD, INLINE_FRAGMENT], branch.kind)) {
+    return { tree, resolveInfo };
+  }
+
+  // FRAGMENT_SPREAD with selectionSet...
+  if (branch.kind === FRAGMENT_SPREAD && branchHasSelectionSet) {
+    const fragmentName = branch.name.value;
+    const fragment = resolveInfo.fragments[fragmentName];
+
+    return {
+      tree: {
+        ...tree,
+        ...fragment.selectionSet.selections.reduce(reduceFieldASTsToSelectionsTree, { tree: {}, resolveInfo }).tree,
+      },
+      resolveInfo,
+    };
+  }
+
+  // FIELD with selectionSet...
+  if (branch.kind === FIELD && branchHasSelectionSet) {
+    return {
+      tree: {
+        ...tree,
+        [branch.name.value]: branch.selectionSet.selections.reduce(reduceFieldASTsToSelectionsTree, { tree: {}, resolveInfo }).tree,
+      },
+      resolveInfo,
+    };
+  }
+
+  // INLINE_FRAGMENT with selectionSet...
+  if (branch.kind === INLINE_FRAGMENT && branchHasSelectionSet) {
+    return {
+      tree: {
+        ...tree,
+        ...branch.selectionSet.selections.reduce(reduceFieldASTsToSelectionsTree, { tree: {}, resolveInfo }).tree,
+      },
+      resolveInfo,
+    };
+  }
+
+  // Scalar field
+  return {
+    tree: {
+      ...tree,
+      [branch.name.value]: true,
+    },
+    resolveInfo,
+  };
+}
