@@ -74,9 +74,9 @@ function getArgPredicateExpressionEdn({ key, value }, schemaTypeName) {
   case operators.greaterThanOrEqualTo:
   case operators.lessThan:
   case operators.lessThanOrEqualTo:
-  case operators.isMissing:
-  case operators.not:
+    console.log('return null...');
     return null;
+  case operators.isMissing:
   case operators.or:
   case operators.and:
     const operandsArray = isArray(value) ? value : [value];
@@ -88,7 +88,6 @@ function getArgPredicateExpressionEdn({ key, value }, schemaTypeName) {
     return [value];
   default:
     return reduce(value, (memo, attributePredicate, attributeName) => {
-      console.log('memo:', memo);
       if (isObject(attributePredicate)) {
         return getArgPredicateExpressionEdn({ key: attributeName, value: attributePredicate }, schemaTypeName);
       }

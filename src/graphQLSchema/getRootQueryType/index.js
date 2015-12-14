@@ -48,12 +48,12 @@ function generateRootQueryFields(apiUrl, dbAlias) {
           [instanceQueryFieldName]: {
             type: instanceGraphQLType,
             args: getQueryInputArgsForSchemaType(schemaType, schemaTypeName),
-            resolve: (query, args) => resolveInstanceFieldQuery({ query, args, schemaTypeName, db }),
+            resolve: (query, args) => resolveInstanceFieldQuery({ parent: query, args, schemaTypeName, db }),
           },
           [connectionQueryFieldName]: {
             type: connectionGraphQLType,
             args: { ...getQueryInputArgsForSchemaType(schemaType, schemaTypeName), ...connectionArgs },
-            resolve: (query, args) => resolveConnectionFieldQuery({ query, args, schemaTypeName, db }),
+            resolve: (query, args) => resolveConnectionFieldQuery({ parent: query, args, schemaTypeName, db }),
           },
         };
       }, {});
