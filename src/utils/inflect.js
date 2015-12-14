@@ -39,3 +39,12 @@ export function getConnectionQueryFieldNameFromTypeName(typeName) {
 
   return connectionQueryFieldName;
 }
+
+// - From Type Name and Attribute Name -
+export function getAttributeIdentFromAttributeNameAndTypeName(attributeName, typeName) {
+  const attributeIdentNamespace = `:${inflect.camelize(typeName, false)}`;
+  const attributeIdentString = `${attributeIdentNamespace}/${attributeName}`;
+  const attributeIdent = edn.kw(attributeIdentString);
+
+  return attributeIdent;
+}

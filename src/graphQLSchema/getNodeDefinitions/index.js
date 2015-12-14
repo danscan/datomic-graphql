@@ -1,8 +1,8 @@
 import consumer from '../../consumer';
 import { fromGlobalId, nodeDefinitions } from 'graphql-relay';
 import { types } from '../utils/getGraphQLTypeForSchemaType';
-import { getAttributeNameFromAttributeIdent } from '../../utils/inflect';
-import { reduce, memoize } from 'underscore';
+import getObjectFromEntity from '../../utils/getObjectFromEntity';
+import { memoize } from 'underscore';
 
 // Export memoized function to avoid creating multiple types with name "Node"
 // on schema...
@@ -17,15 +17,7 @@ export default memoize(function getNodeDefinitions(apiUrl, dbAlias) {
 
       return db.getEntity(id)
         .then(entity => {
-          const initialObject = { __type: type };
-          const object = reduce(entity, (aggregateObject, attributeValue, attributeIdent) => {
-            const attributeName = getAttributeNameFromAttributeIdent(attributeIdent);
-
-            return {
-              ...aggregateObject,
-              [attributeName]: attributeValue,
-            };
-          }, initialObject);
+          const object = { ...getObjectFromEntity(entity), __type: type };
 
           return object;
         });
