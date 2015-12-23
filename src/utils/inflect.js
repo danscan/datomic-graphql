@@ -48,3 +48,11 @@ export function getAttributeIdentFromAttributeNameAndTypeName(attributeName, typ
 
   return attributeIdent;
 }
+
+// - From Reverse Ref Field -
+export function getReverseRefFieldNameFromReverseRefField(reverseRefField) {
+  const reverseRefFieldEdn = edn.kw(reverseRefField);
+  const reverseRefFieldName = reverseRefFieldEdn.name;
+
+  return reverseRefFieldName;
+}
