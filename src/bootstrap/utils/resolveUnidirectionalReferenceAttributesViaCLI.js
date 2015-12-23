@@ -73,7 +73,7 @@ function promptForReverseRefFieldSelection({ ident, doc, refTargetTypeName }, in
       [doc: "${doc}"]
     `,
   }], ({ reverseRefField }) => {
-    const reverseRefFieldKeyword = getAttributeIdentFromAttributeNameAndTypeName(refTargetTypeName, reverseRefField);
+    const reverseRefFieldKeyword = getAttributeIdentFromAttributeNameAndTypeName(reverseRefField, refTargetTypeName);
 
     return [
       ...aggregateAnswers,
