@@ -37,13 +37,16 @@ export const operatorMap = {
 // Array of fields to exclude from query edn
 export const excludeFields = keys(connectionArgs);
 
-export default function getQueryEdn({ args, schemaTypeName }) {
+export default function getQueryEdn({ args, schemaTypeName, referenceFieldClause }) {
   const filteredArgs = omit(args, excludeFields);
   const predicateVectorArray = map(filteredArgs, (argValue, argKey) => {
     const argPredicateExpression = getArgPredicateExpressionEdn({ key: argKey, value: argValue }, schemaTypeName);
     console.log('edn.encode(argPredicateExpression):', edn.encode(argPredicateExpression));
     return argPredicateExpression;
   });
+  const queryClauseArray = referenceFieldClause
+                          ? [referenceFieldClause, ...predicateVectorArray]
+                          : predicateVectorArray;
 
   const queryEdn = new edn.Vector([
     edn.kw(':find'),
@@ -53,7 +56,7 @@ export default function getQueryEdn({ args, schemaTypeName }) {
       ]),
       edn.sym('...'),
     ]),
-    edn.kw(':where'), ...predicateVectorArray,
+    edn.kw(':where'), ...queryClauseArray,
   ]);
   console.log('edn.encode(queryEdn):', edn.encode(queryEdn));
 
