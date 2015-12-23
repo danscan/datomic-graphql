@@ -23,6 +23,7 @@ export default (apiUrl, dbAlias) => {
           new edn.Map([edn.kw(':db/unique'), new edn.Vector([edn.kw(':db/ident')])]),
           edn.kw(':extGraphQL/required'),
           new edn.Map([edn.kw(':extGraphQL/refTarget'), new edn.Vector([edn.kw(':db/ident'), edn.kw(':extGraphQL.type/name'), edn.kw(':extGraphQL.interface/name')])]),
+          edn.kw(':extGraphQL/reverseRefField'),
           new edn.Map([edn.kw(':extGraphQL/enumValues'), new edn.Vector([edn.kw(':db/ident')])]),
         ]),
       ]),
