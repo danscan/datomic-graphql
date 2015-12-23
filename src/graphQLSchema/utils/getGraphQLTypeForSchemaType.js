@@ -34,9 +34,24 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
       let resolveAttribute;
 
       if (attributeHasRefTarget && attributeFieldIsConnection) {
-        resolveAttribute = (query, args) => resolveConnectionFieldQuery({ parent: query, args, schemaTypeName, db });
+        resolveAttribute = (parent, args) => resolveConnectionFieldQuery({
+          parent,
+          fieldName: attributeName,
+          args,
+          schemaTypeName: attribute.refTarget,
+          db,
+        });
       } else if (attributeHasRefTarget) {
-        resolveAttribute = (query, args) => resolveInstanceFieldQuery({ parent: query, args, schemaTypeName, db });
+        resolveAttribute = (parent, args) => resolveInstanceFieldQuery({
+          parent,
+          fieldName: attributeName,
+          args,
+          schemaTypeName: attribute.refTarget,
+          db,
+        });
+      } else {
+        // TODO: Implement better resolveScalarFieldQuery
+        resolveAttribute = (parent) => parent[attributeName];
       }
 
       return {
@@ -53,6 +68,7 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
           const instanceType = types[typeName];
           const connectionType = connectionTypes[typeName];
 
+          // TODO: Use attribute reverseReferenceField attribute, cardinality & uniqueness to properly create & resolve this field
           return {
             ...aggregateReverseReferenceFields,
             [fieldName]: {
@@ -62,7 +78,7 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
                 ...connectionArgs,
               },
               description: `${reverseReferenceField.type}s that refer to the ${schemaTypeName} via their '${reverseReferenceField.field}' field`,
-              resolve: (query, args) => resolveConnectionFieldQuery({ parent: query, args, schemaTypeName: typeName, db }),
+              resolve: (query, args) => resolveConnectionFieldQuery({ parent: query, args, fieldName, schemaTypeName: typeName, db }),
             },
           };
         }, {}),

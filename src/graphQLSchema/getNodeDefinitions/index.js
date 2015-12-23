@@ -16,10 +16,10 @@ export default memoize(function getNodeDefinitions(apiUrl, dbAlias) {
       const { type, id } = fromGlobalId(globalId);
 
       return db.getEntity(id)
-        .then(entity => ({ ...getObjectFromEntity(entity), __type: type }));
+        .then(entity => getObjectFromEntity(entity, type));
     },
     (object) => {
-      const type = types[object.__type];
+      const type = types[object.__typeName];
 
       return type;
     }
