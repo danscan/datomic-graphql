@@ -10,6 +10,7 @@ const interfaceImplementationsAttributeIdent = edn.kw(':extGraphQL.interface/imp
 const interfaceDocAttributeIdent = edn.kw(':extGraphQL.interface/doc');
 const refTargetAttributeIdent = edn.kw(':extGraphQL/refTarget');
 const enumValuesAttributeIdent = edn.kw(':extGraphQL/enumValues');
+const reverseRefFieldAttributeIdent = edn.kw(':extGraphQL/reverseRefField');
 
 // (Extension attributes (partials))
 const typeNameAttributePartial = [
@@ -63,6 +64,13 @@ const enumValuesAttributePartial = [
   edn.kw(':db/cardinality'), edn.kw(':db.cardinality/many'),
   edn.kw(':db/doc'), 'The possible values of an enumeration-type reference attribute',
 ];
+const reverseRefFieldAttributePartial = [
+  edn.kw(':db/ident'), reverseRefFieldAttributeIdent,
+  edn.kw(':db/valueType'), edn.kw(':db.type/keyword'),
+  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
+  edn.kw(':db/unique'), edn.kw(':db.unique/value'),
+  edn.kw(':db/doc'), 'The reverse reference field on the type or interface a reference attribute targets',
+];
 
 export default function installExtensionAttributes(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
@@ -75,6 +83,7 @@ export default function installExtensionAttributes(apiUrl, dbAlias) {
     installAttributePartial(interfaceDocAttributePartial),
     installAttributePartial(refTargetAttributePartial),
     installAttributePartial(enumValuesAttributePartial),
+    installAttributePartial(reverseRefFieldAttributePartial),
   ]);
 
   // Install extesnion attributes if they are not yet installed
@@ -109,6 +118,7 @@ function queryWhetherExtensionAttributesAreInstalled(apiUrl, dbAlias) {
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceDocAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), refTargetAttributeIdent]),
     new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), enumValuesAttributeIdent]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), reverseRefFieldAttributeIdent]),
   ];
   const installedAttributesQueryEdn = new edn.Vector([
     edn.kw(':find'), edn.sym('?attr'),
