@@ -1,75 +1,80 @@
 import consumer from '../../consumer';
 import edn from 'jsedn';
-
-// (Extension attribute idents)
-const typeNameAttributeIdent = edn.kw(':extGraphQL.type/name');
-const typeNamespaceAttributeIdent = edn.kw(':extGraphQL.type/namespace');
-const typeDocAttributeIdent = edn.kw(':extGraphQL.type/doc');
-const interfaceNameAttributeIdent = edn.kw(':extGraphQL.interface/name');
-const interfaceImplementationsAttributeIdent = edn.kw(':extGraphQL.interface/implementations');
-const interfaceDocAttributeIdent = edn.kw(':extGraphQL.interface/doc');
-const refTargetAttributeIdent = edn.kw(':extGraphQL/refTarget');
-const enumValuesAttributeIdent = edn.kw(':extGraphQL/enumValues');
-const reverseRefFieldAttributeIdent = edn.kw(':extGraphQL/reverseRefField');
+import {
+  extensionAttributeIdentKeywords,
+  extensionAttributeValueTypeKeywords,
+  extensionAttributeCardinalityKeywords,
+  extensionAttributeUniqueKeywords,
+  extensionAttributeDocStrings,
+  TYPE_NAME,
+  TYPE_NAMESPACE,
+  TYPE_DOC,
+  INTERFACE_NAME,
+  INTERFACE_IMPLEMENTATIONS,
+  INTERFACE_DOC,
+  REF_TARGET,
+  ENUM_VALUES,
+  REVERSE_REF_FIELD,
+} from '../../constants/extensionAttributes';
 
 // (Extension attributes (partials))
 const typeNameAttributePartial = [
-  edn.kw(':db/ident'), typeNameAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/unique'), edn.kw(':db.unique/value'),
-  edn.kw(':db/doc'), 'A type\'s name in the GraphQL type system',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_NAME],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[TYPE_NAME],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[TYPE_NAME],
+  edn.kw(':db/unique'), extensionAttributeUniqueKeywords[TYPE_NAME],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[TYPE_NAME],
 ];
 const typeNamespaceAttributePartial = [
-  edn.kw(':db/ident'), typeNamespaceAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/keyword'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/unique'), edn.kw(':db.unique/value'),
-  edn.kw(':db/doc'), 'The namespace of a type\'s attribute idents in the db',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_NAMESPACE],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[TYPE_NAMESPACE],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[TYPE_NAMESPACE],
+  edn.kw(':db/unique'), extensionAttributeUniqueKeywords[TYPE_NAMESPACE],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[TYPE_NAMESPACE],
 ];
 const typeDocAttributePartial = [
-  edn.kw(':db/ident'), typeDocAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/doc'), 'The description of a type',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_DOC],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[TYPE_DOC],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[TYPE_DOC],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[TYPE_DOC],
 ];
 const interfaceNameAttributePartial = [
-  edn.kw(':db/ident'), interfaceNameAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/unique'), edn.kw(':db.unique/value'),
-  edn.kw(':db/doc'), 'An interface\'s name in the GraphQL type system',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_NAME],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[INTERFACE_NAME],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[INTERFACE_NAME],
+  edn.kw(':db/unique'), extensionAttributeUniqueKeywords[INTERFACE_NAME],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[INTERFACE_NAME],
 ];
 const interfaceImplementationsAttributePartial = [
-  edn.kw(':db/ident'), interfaceImplementationsAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/ref'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/many'),
-  edn.kw(':db/doc'), 'The types that implement an interface',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_IMPLEMENTATIONS],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[INTERFACE_IMPLEMENTATIONS],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[INTERFACE_IMPLEMENTATIONS],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[INTERFACE_IMPLEMENTATIONS],
 ];
 const interfaceDocAttributePartial = [
-  edn.kw(':db/ident'), interfaceDocAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/string'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/doc'), 'The description of an interface',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_DOC],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[INTERFACE_DOC],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[INTERFACE_DOC],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[INTERFACE_DOC],
 ];
 const refTargetAttributePartial = [
-  edn.kw(':db/ident'), refTargetAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/ref'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/doc'), 'The type or interface that a reference attribute targets',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[REF_TARGET],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[REF_TARGET],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[REF_TARGET],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[REF_TARGET],
 ];
 const enumValuesAttributePartial = [
-  edn.kw(':db/ident'), enumValuesAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/ref'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/many'),
-  edn.kw(':db/doc'), 'The possible values of an enumeration-type reference attribute',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[ENUM_VALUES],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[ENUM_VALUES],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[ENUM_VALUES],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[ENUM_VALUES],
 ];
 const reverseRefFieldAttributePartial = [
-  edn.kw(':db/ident'), reverseRefFieldAttributeIdent,
-  edn.kw(':db/valueType'), edn.kw(':db.type/keyword'),
-  edn.kw(':db/cardinality'), edn.kw(':db.cardinality/one'),
-  edn.kw(':db/unique'), edn.kw(':db.unique/value'),
-  edn.kw(':db/doc'), 'The reverse reference field on the type or interface a reference attribute targets',
+  edn.kw(':db/ident'), extensionAttributeIdentKeywords[REVERSE_REF_FIELD],
+  edn.kw(':db/valueType'), extensionAttributeValueTypeKeywords[REVERSE_REF_FIELD],
+  edn.kw(':db/cardinality'), extensionAttributeCardinalityKeywords[REVERSE_REF_FIELD],
+  edn.kw(':db/unique'), extensionAttributeUniqueKeywords[REVERSE_REF_FIELD],
+  edn.kw(':db/doc'), extensionAttributeDocStrings[REVERSE_REF_FIELD],
 ];
 
 export default function installExtensionAttributes(apiUrl, dbAlias) {
@@ -110,15 +115,15 @@ function installAttributePartial(attributePartial) {
 function queryWhetherExtensionAttributesAreInstalled(apiUrl, dbAlias) {
   const db = consumer(apiUrl, dbAlias);
   const extensionAttributesQueryPartial = [
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeNameAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeNamespaceAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), typeDocAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceNameAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceImplementationsAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), interfaceDocAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), refTargetAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), enumValuesAttributeIdent]),
-    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), reverseRefFieldAttributeIdent]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_NAME]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_NAMESPACE]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[TYPE_DOC]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_NAME]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_IMPLEMENTATIONS]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[INTERFACE_DOC]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[REF_TARGET]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[ENUM_VALUES]]),
+    new edn.Vector([edn.sym('?attr'), edn.kw(':db/ident'), extensionAttributeIdentKeywords[REVERSE_REF_FIELD]]),
   ];
   const installedAttributesQueryEdn = new edn.Vector([
     edn.kw(':find'), edn.sym('?attr'),
