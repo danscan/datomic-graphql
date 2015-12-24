@@ -75,11 +75,7 @@ export default (apiUrl, dbAlias) => {
     }
 
     return nextSchemaValue;
-  }, {}))
-  .then(schemaImpliedTypes => {
-    console.log('schemaImpliedTypes:', schemaImpliedTypes);
-    return schemaImpliedTypes;
-  });
+  }, {}));
 };
 
 function parseSchemaAttribute(rawSchemaAttribute) {
