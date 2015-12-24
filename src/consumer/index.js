@@ -1,6 +1,7 @@
 import axios from 'axios';
 import edn from 'jsedn';
 
+// (Value constants)
 const EDN_MIME_TYPE = 'application/edn';
 
 export default function consumer(apiUrl, dbAlias) {
