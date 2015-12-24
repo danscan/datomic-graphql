@@ -50,6 +50,14 @@ export function getAttributeIdentFromAttributeNameAndTypeName(attributeName, typ
 }
 
 // - From Reverse Ref Field -
+export function getReverseRefTypeNameFromReverseRefField(reverseRefField) {
+  const reverseRefFieldEdn = edn.kw(reverseRefField);
+  const reverseRefFieldNamespace = reverseRefFieldEdn.ns;
+  const reverseRefTypeName = inflect.camelize(reverseRefFieldNamespace.replace(':', ''));
+
+  return reverseRefTypeName;
+}
+
 export function getReverseRefFieldNameFromReverseRefField(reverseRefField) {
   const reverseRefFieldEdn = edn.kw(reverseRefField);
   const reverseRefFieldName = reverseRefFieldEdn.name;

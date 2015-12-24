@@ -2,10 +2,10 @@ import getQueryEdn from './getQueryEdn';
 import getReferenceFieldClause from './getReferenceFieldClause';
 import getObjectFromEntity from '../../utils/getObjectFromEntity';
 
-export default function resolveInstanceFieldQuery({ parent, fieldName, args, schemaTypeName, db }) {
+export default function resolveInstanceFieldQuery({ parent, attributeIdent, isReverseRef, args, schemaTypeName, db }) {
   let referenceFieldClause;
   if (parent.__typeName) {
-    referenceFieldClause = getReferenceFieldClause(parent.id, parent.__typeName, fieldName);
+    referenceFieldClause = getReferenceFieldClause({ parentId: parent.id, attributeIdent, isReverseRef });
   }
   // TODO: Add limit 1...
   // console.log('resolveInstanceFieldQuery... TODO: Add limit 1...');

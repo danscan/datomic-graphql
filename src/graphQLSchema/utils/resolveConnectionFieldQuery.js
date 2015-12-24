@@ -3,10 +3,10 @@ import getQueryEdn from './getQueryEdn';
 import getReferenceFieldClause from './getReferenceFieldClause';
 import getObjectFromEntity from '../../utils/getObjectFromEntity';
 
-export default function resolveConnectionFieldQuery({ parent, fieldName, args, schemaTypeName, db }) {
+export default function resolveConnectionFieldQuery({ parent, attributeIdent, isReverseRef, args, schemaTypeName, db }) {
   let referenceFieldClause;
   if (parent.__typeName) {
-    referenceFieldClause = getReferenceFieldClause(parent.id, parent.__typeName, fieldName);
+    referenceFieldClause = getReferenceFieldClause({ parentId: parent.id, attributeIdent, isReverseRef });
   }
   const queryEdn = getQueryEdn({ args, schemaTypeName, referenceFieldClause });
 

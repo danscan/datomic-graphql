@@ -1,6 +1,5 @@
 import consumer from '../consumer';
 import edn from 'jsedn';
-import { getTypeNameFromAttributeIdent, getAttributeNameFromAttributeIdent } from './inflect';
 import { reduce } from 'underscore';
 
 export default (apiUrl, dbAlias) => {
@@ -13,7 +12,6 @@ export default (apiUrl, dbAlias) => {
           edn.kw(':extGraphQL.type/name'),
           edn.kw(':extGraphQL.type/namespace'),
           edn.kw(':extGraphQL.type/doc'),
-          new edn.Map([edn.kw(':extGraphQL/_refTarget'), new edn.Vector([edn.kw(':db/ident')])]),
         ]),
       ]),
       edn.sym('...'),
@@ -27,24 +25,12 @@ export default (apiUrl, dbAlias) => {
       const name = typeData[':extGraphQL.type/name'];
       const namespace = typeData[':extGraphQL.type/namespace'];
       const doc = typeData[':extGraphQL.type/doc'];
-      const reverseReferenceAttributesData = typeData[':extGraphQL/_refTarget'] || [];
-      const reverseReferenceFields = reverseReferenceAttributesData.map(reverseReferenceAttributeData => {
-        const attributeIdent = reverseReferenceAttributeData[':db/ident'];
-        const originTypeName = getTypeNameFromAttributeIdent(attributeIdent);
-        const originAttributeName = getAttributeNameFromAttributeIdent(attributeIdent);
-
-        return {
-          type: originTypeName,
-          field: originAttributeName,
-        };
-      });
 
       return {
         ...aggregateInstalledTypes,
         [name]: {
           namespace,
           doc,
-          reverseReferenceFields,
         },
       };
     }, {}));

@@ -4,8 +4,6 @@ import { connectionArgs, globalIdField } from 'graphql-relay';
 import getGraphQLTypeForAttribute from './getGraphQLTypeForAttribute';
 import getQueryInputArgsForSchemaType from './getQueryInputArgsForSchemaType';
 import getNodeDefinitions from '../getNodeDefinitions';
-import { getConnectionQueryFieldNameFromTypeName } from '../../utils/inflect';
-import { connectionTypes } from './getGraphQLConnectionTypeForSchemaType';
 import resolveInstanceFieldQuery from './resolveInstanceFieldQuery';
 import resolveConnectionFieldQuery from './resolveConnectionFieldQuery';
 import { reduce } from 'underscore';
@@ -36,7 +34,8 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
       if (attributeHasRefTarget && attributeFieldIsConnection) {
         resolveAttribute = (parent, args) => resolveConnectionFieldQuery({
           parent,
-          fieldName: attributeName,
+          attributeIdent: attribute.ident,
+          isReverseRef: attribute.isReverseRef,
           args,
           schemaTypeName: attribute.refTarget,
           db,
@@ -44,7 +43,8 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
       } else if (attributeHasRefTarget) {
         resolveAttribute = (parent, args) => resolveInstanceFieldQuery({
           parent,
-          fieldName: attributeName,
+          attributeIdent: attribute.ident,
+          isReverseRef: attribute.isReverseRef,
           args,
           schemaTypeName: attribute.refTarget,
           db,
@@ -62,26 +62,6 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
           description: attribute.doc,
           resolve: resolveAttribute,
         },
-        ...reduce(schemaType.reverseReferenceFields, (aggregateReverseReferenceFields, reverseReferenceField) => {
-          const typeName = reverseReferenceField.type;
-          const fieldName = getConnectionQueryFieldNameFromTypeName(typeName);
-          const instanceType = types[typeName];
-          const connectionType = connectionTypes[typeName];
-
-          // TODO: Use attribute reverseReferenceField attribute, cardinality & uniqueness to properly create & resolve this field
-          return {
-            ...aggregateReverseReferenceFields,
-            [fieldName]: {
-              type: connectionType,
-              args: {
-                ...getQueryInputArgsForSchemaType(instanceType, typeName),
-                ...connectionArgs,
-              },
-              description: `${reverseReferenceField.type}s that refer to the ${schemaTypeName} via their '${reverseReferenceField.field}' field`,
-              resolve: (query, args) => resolveConnectionFieldQuery({ parent: query, args, fieldName, schemaTypeName: typeName, db }),
-            },
-          };
-        }, {}),
       };
     }, initialFields),
     interfaces: [nodeInterface],

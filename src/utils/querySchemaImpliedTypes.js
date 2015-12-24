@@ -1,6 +1,6 @@
 import consumer from '../consumer';
 import edn from 'jsedn';
-import { getAttributeNameFromAttributeIdent, getTypeNameFromAttributeIdent } from './inflect';
+import { getAttributeNameFromAttributeIdent, getTypeNameFromAttributeIdent, getReverseRefTypeNameFromReverseRefField, getReverseRefFieldNameFromReverseRefField } from './inflect';
 import { reduce } from 'underscore';
 
 // (Value constants)
@@ -44,14 +44,42 @@ export default (apiUrl, dbAlias) => {
       return aggregateSchema;
     }
 
-    return {
+    let nextSchemaValue = {
       ...aggregateSchema,
       [schemaAttributeType]: {
         ...aggregateSchema[schemaAttributeType],
         [schemaAttributeName]: schemaAttribute,
       },
     };
-  }, {}));
+
+    if (schemaAttribute.reverseRefField) {
+      const schemaAttributeReverseRefTypeName = getReverseRefTypeNameFromReverseRefField(schemaAttribute.reverseRefField);
+      const schemaAttributeReverseRefFieldName = getReverseRefFieldNameFromReverseRefField(schemaAttribute.reverseRefField);
+
+      nextSchemaValue = {
+        ...aggregateSchema,
+        ...nextSchemaValue,
+        [schemaAttributeReverseRefTypeName]: {
+          ...aggregateSchema[schemaAttributeReverseRefTypeName],
+          [schemaAttributeReverseRefFieldName]: {
+            ident: schemaAttribute.ident,
+            index: true,
+            valueType: 'ref',
+            cardinality: 'many',
+            isReverseRef: true,
+            refTarget: schemaAttributeType,
+            doc: `Reverse reference to ${schemaAttribute.ident}`,
+          },
+        },
+      };
+    }
+
+    return nextSchemaValue;
+  }, {}))
+  .then(schemaImpliedTypes => {
+    console.log('schemaImpliedTypes:', schemaImpliedTypes);
+    return schemaImpliedTypes;
+  });
 };
 
 function parseSchemaAttribute(rawSchemaAttribute) {
