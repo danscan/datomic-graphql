@@ -30,3 +30,5 @@ cd example
 npm install
 npm start
 ```
+
+`datomic-graphql` will prompt you to resolve so ambiguities regarding reference attribute targets, enum values, etc.  Once ambiguities are resolved, a GraphQL server will start up.
