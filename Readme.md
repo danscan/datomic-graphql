@@ -27,5 +27,6 @@ git clone https://github.com/danscan/datomic-graphql.git
 cd datomic-graphql
 npm install
 cd example
+npm install
 npm start
 ```
