@@ -50,7 +50,7 @@ export default function getGraphQLTypeForSchemaType({ schemaType, schemaTypeName
           db,
         });
       } else {
-        // TODO: Implement better resolveScalarFieldQuery
+        // Resolve scalar value
         resolveAttribute = (parent) => parent[attributeName];
       }
 

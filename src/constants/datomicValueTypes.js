@@ -3,24 +3,24 @@ import edn from 'jsedn';
 
 // (Boolean type ident string constants)
 export const BOOLEAN = ':db.type/boolean';
-// (Float type ident string constants)
+// (Float-type ident string constants)
 export const FLOAT = ':db.type/float';
 export const DOUBLE = ':db.type/double';
 export const BIG_DEC = ':db.type/bigdec';
-// (Integer type ident string constants)
+// (Integer-type ident string constants)
 export const LONG = ':db.type/long';
 export const BIG_INT = ':db.type/bigint';
-// (String type ident string constants)
+// (String-type ident string constants)
 export const KEYWORD = ':db.type/keyword';
 export const INSTANT = ':db.type/instant';
 export const STRING = ':db.type/string';
 export const UUID = ':db.type/uuid';
 export const URI = ':db.type/uri';
 export const BYTES = ':db.type/bytes';
-// (Ref type ident string constants)
+// (Ref-type ident string constants)
 export const REF = ':db.type/ref';
 
-// (Exhaustive map of [Datomic value type constant name] -> [Datomic value type ident string])
+// (Exhaustive map of [Datomic value type constant] -> [Datomic value type ident string])
 export const datomicValueTypeIdents = {
   BOOLEAN,
   FLOAT,
@@ -37,7 +37,7 @@ export const datomicValueTypeIdents = {
   REF,
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [extension attribute ident keyword])
+// (Exhaustive map of [extension attribute constant] -> [extension attribute ident keyword])
 export const datomicValueTypeKeywords = {
   [BOOLEAN]: edn.kw(BOOLEAN),
   [FLOAT]: edn.kw(FLOAT),
@@ -54,7 +54,7 @@ export const datomicValueTypeKeywords = {
   [REF]: undefined,
 };
 
-// (Exhaustive map of [Datomic value type constant name] -> [GraphQL type])
+// (Exhaustive map of [Datomic value type constant] -> [GraphQL type])
 export const datomicValueTypeGraphQLTypes = {
   [BOOLEAN]: GraphQLBoolean,
 

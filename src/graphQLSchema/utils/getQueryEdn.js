@@ -82,6 +82,7 @@ function getArgPredicateExpressionEdn({ key, value }, schemaTypeName) {
   case operators.isMissing:
   case operators.or:
   case operators.and:
+    console.log('prediate composition... value:', value);
     const operandsArray = isArray(value) ? value : [value];
     return new edn.List([
       edn.sym(mappedOperator),

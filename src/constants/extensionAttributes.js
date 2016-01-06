@@ -1,18 +1,8 @@
 import edn from 'jsedn';
 import {
   datomicValueTypeKeywords,
-  BOOLEAN,
-  FLOAT,
-  DOUBLE,
-  BIG_DEC,
-  LONG,
-  BIG_INT,
   KEYWORD,
-  INSTANT,
   STRING,
-  UUID,
-  URI,
-  BYTES,
   REF,
 } from './datomicValueTypes';
 import {
@@ -23,7 +13,6 @@ import {
 import {
   datomicUniqueIdentKeywords,
   VALUE as UNIQUE_VALUE,
-  IDENTITY as UNIQUE_IDENTITY,
 } from './datomicUniques';
 
 // (Extension attribute ident string constants)
@@ -37,7 +26,7 @@ export const REF_TARGET = ':extGraphQL/refTarget';
 export const ENUM_VALUES = ':extGraphQL/enumValues';
 export const REVERSE_REF_FIELD = ':extGraphQL/reverseRefField';
 
-// (Exhaustive map of [extension attribute constant name] -> [extension attribute ident string])
+// (Exhaustive map of [extension attribute constant] -> [extension attribute ident string])
 export const extensionAttributeIdents = {
   TYPE_NAME,
   TYPE_NAMESPACE,
@@ -50,7 +39,7 @@ export const extensionAttributeIdents = {
   REVERSE_REF_FIELD,
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [extension attribute ident keyword])
+// (Exhaustive map of [extension attribute constant] -> [extension attribute ident keyword])
 export const extensionAttributeIdentKeywords = {
   [TYPE_NAME]: edn.kw(TYPE_NAME),
   [TYPE_NAMESPACE]: edn.kw(TYPE_NAMESPACE),
@@ -63,7 +52,7 @@ export const extensionAttributeIdentKeywords = {
   [REVERSE_REF_FIELD]: edn.kw(REVERSE_REF_FIELD),
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [datomic value type keyword])
+// (Exhaustive map of [extension attribute constant] -> [datomic value type keyword])
 export const extensionAttributeValueTypeKeywords = {
   [TYPE_NAME]: datomicValueTypeKeywords[STRING],
   [TYPE_NAMESPACE]: datomicValueTypeKeywords[KEYWORD],
@@ -76,7 +65,7 @@ export const extensionAttributeValueTypeKeywords = {
   [REVERSE_REF_FIELD]: datomicValueTypeKeywords[KEYWORD],
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [datomic cardinality keyword])
+// (Exhaustive map of [extension attribute constant] -> [datomic cardinality keyword])
 export const extensionAttributeCardinalityKeywords = {
   [TYPE_NAME]: datomicCardinalityIdentKeywords[CARDINALITY_ONE],
   [TYPE_NAMESPACE]: datomicCardinalityIdentKeywords[CARDINALITY_ONE],
@@ -89,7 +78,7 @@ export const extensionAttributeCardinalityKeywords = {
   [REVERSE_REF_FIELD]: datomicCardinalityIdentKeywords[CARDINALITY_ONE],
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [datomic unique keyword OR null])
+// (Exhaustive map of [extension attribute constant] -> [datomic unique keyword OR null])
 export const extensionAttributeUniqueKeywords = {
   [TYPE_NAME]: datomicUniqueIdentKeywords[UNIQUE_VALUE],
   [TYPE_NAMESPACE]: datomicUniqueIdentKeywords[UNIQUE_VALUE],
@@ -102,7 +91,7 @@ export const extensionAttributeUniqueKeywords = {
   [REVERSE_REF_FIELD]: datomicUniqueIdentKeywords[UNIQUE_VALUE],
 };
 
-// (Exhaustive map of [extension attribute constant name] -> [extension attribute doc string])
+// (Exhaustive map of [extension attribute constant] -> [extension attribute doc string])
 export const extensionAttributeDocStrings = {
   [TYPE_NAME]: 'A type\'s name in the GraphQL type system',
   [TYPE_NAMESPACE]: 'The namespace of a type\'s attribute idents in the db',
