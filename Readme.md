@@ -12,7 +12,7 @@ Better notes coming soon.  **Please don't hesitate to contact me or open an issu
 ## Running the Example
 
 ### Datomic / Mbrainz Setup
-First download the datomic-pro trial and follow this tutorial (http://blog.datomic.com/2013/07/datomic-musicbrainz-sample-database.html) to create the musicbrainz database.
+First download the datomic-pro trial and follow [this tutorial](http://blog.datomic.com/2013/07/datomic-musicbrainz-sample-database.html) to create the musicbrainz database.
 
 Then, from within `datomic-pro-0.9.x` (in different Terminal tabs / tmux / bg):
 ```
