@@ -11,6 +11,9 @@ Better notes coming soon.  **Please don't hesitate to contact me or open an issu
 
 ## Running the Example
 
+GraphiQL interface to Mbrainz Datomic sample database.
+![GraphiQL](https://cloud.githubusercontent.com/assets/1638987/12154291/a4d30cda-b48c-11e5-841d-62428f642d2f.png)
+
 ### Datomic / Mbrainz Setup
 First download the datomic-pro trial and follow [this tutorial](http://blog.datomic.com/2013/07/datomic-musicbrainz-sample-database.html) to create the musicbrainz database.
 
