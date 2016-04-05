@@ -1,5 +1,8 @@
 # datomic-graphql
-[Work in Progress] GraphQL interface to datomic.
+GraphQL interface to datomic.
+
+## Status
+This works.  It's pretty nice!  It's unfinished though, and while I plan to make use of it, I am not maintaining it now.  If you're interested at all, please open an issue, and I'll respond!
 
 ### Purpose
 Datomic is a very interesting database with a simple design.  I discovered it right when GraphQL was released, and wanted to test the potential for aligning GraphQL & Datomic.
